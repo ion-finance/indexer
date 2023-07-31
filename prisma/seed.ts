@@ -2,11 +2,36 @@ import { PoolType, PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
+const iUSDC = "EQBuMOcj9Wn0GrxJgaCCNjRRKcL49ITH7KwcG6o_Itz1yMtf";
+const iUSDT = "EQDD43IlrLh-WB9fR5fpEKFnoJVaXbhPUeUWkwFmrFjHotrN";
+const iDAI = "EQBB71tByWZdvYJHrHSPOy4i2bGYL3zaj9hGaoWJ-wM3jaQ3";
+const oUSDT = "EQAAC95Z42lx8g3PIUanPDfNwxxvlNuWUyS48rF2bqrDIVYc";
+const oWBTC = "EQDaqmEu51dQ5Yq72zInwPW6u-XwcuUjorTQ89GUbdo54Cy8";
+const jWBTC = "EQBDMkUCqrS7avMbTrfKpxaop5z7dNk4qhNZcv6vfKhU9wnO";
+const WTON = "EQDYz2CjZxOj89hbrWNFLVUUnRZStsJ_swnP8n1ZjTPnZsha";
+
+const triPool = {
+  id: "EQAW0HfBulYajjX6uTVniI9rKvBqJyUR2hiHAlmF-D3BhAXm",
+  coins: [iUSDC, iDAI, iUSDT],
+};
+const BTCPool = {
+  id: "EQCA889dWEGxzSigaP1rBnSS16ejXk78jUp98AO5Uv5ekTrD",
+  coins: [oWBTC, jWBTC],
+};
+const USDTPool = {
+  id: "EQAUfRkTvF34OmO_RzxR-MIF5RWeAovZMeeSa3n_5viyXEHi",
+  coins: [iUSDT, oUSDT],
+};
+const daiTONPool = {
+  id: "EQD90QGcxYfjuk1Ob_yDYteQKIQ7-wOsK_WZZLkLAU5TNBnz",
+  coins: [iDAI, oWBTC],
+};
+
 async function main() {
   await prisma.coin.createMany({
     data: [
       {
-        id: "EQDetVgTEhCuRaT0h1-RGQ4DxVI6rNS9zM8YQ9flw6on1KsW",
+        id: iUSDT,
         name: "iUSDT",
         symbol: "iUSDT",
         decimals: 6,
@@ -15,7 +40,7 @@ async function main() {
         refId: "tether",
       },
       {
-        id: "EQDQVcWiKFMIV4kv98tafibynDJaaNTIbam1rBc8WLrjSLzO",
+        id: iUSDC,
         name: "iUSDC",
         symbol: "iUSDC",
         decimals: 6,
@@ -24,7 +49,7 @@ async function main() {
         refId: "usd-coin",
       },
       {
-        id: "EQBqYsE3MAG1QzW61qY-dXirHxMMliQI20nxVbYhaL1uhbhT",
+        id: iDAI,
         name: "iDAI",
         symbol: "iDAI",
         decimals: 18,
@@ -33,7 +58,7 @@ async function main() {
         refId: "dai",
       },
       {
-        id: "EQC5qBziTUKBpDOhrrg-zdvaJZSfLKl6Bp-GdGF6n2abh8Pf",
+        id: oUSDT,
         name: "oUSDT",
         symbol: "oUSDT",
         decimals: 6,
@@ -43,7 +68,7 @@ async function main() {
         refId: "tether",
       },
       {
-        id: "EQB7q5dfTXMDJteiBo3wDfi45w4bZQt-MUkpP3EZg4CZxWy2",
+        id: oWBTC,
         name: "oWBTC",
         symbol: "oWBTC",
         decimals: 8,
@@ -53,7 +78,7 @@ async function main() {
         refId: "wrapped-bitcoin",
       },
       {
-        id: "EQCDXnZB8rE-5SK11xw48FRLqGgse4uo93rJDJN9dvTEziw3",
+        id: WTON,
         name: "WTON",
         symbol: "WTON",
         decimals: 9,
@@ -62,7 +87,7 @@ async function main() {
         refId: "the-open-network",
       },
       {
-        id: "EQAEgTzh4MAAFr35PaeMkOhBgAkqfrj7S1IM-C8yZxGaKtin",
+        id: jWBTC,
         name: "jWBTC",
         symbol: "jWBTC",
         decimals: 8,
@@ -79,17 +104,13 @@ async function main() {
   await prisma.pool.createMany({
     data: [
       {
-        id: "EQBZrqyG6ppYmjXfukN62AVF4piBaD4vSI0K8mrCfJ2zOksS",
+        id: triPool.id,
         type: PoolType.STABLE,
         name: "iTripool",
-        description: "iUSDT iUSDC iDAI",
+        description: "iUSDT iDAI iUSDC",
         image: "",
         symbol: "ITRIPOOL",
-        coins: [
-          "EQDQVcWiKFMIV4kv98tafibynDJaaNTIbam1rBc8WLrjSLzO",
-          "EQBqYsE3MAG1QzW61qY-dXirHxMMliQI20nxVbYhaL1uhbhT",
-          "EQDetVgTEhCuRaT0h1-RGQ4DxVI6rNS9zM8YQ9flw6on1KsW",
-        ],
+        coins: triPool.coins,
         balances: ["0", "0", "0"],
         rates: ["1000000000000", "1", "1000000000000"],
         collectedAdminFees: ["0", "0", "0"],
@@ -103,16 +124,13 @@ async function main() {
         totalSupply: "0",
       },
       {
-        id: "EQCXIb53XnletXuXG3MvwGJquKEzaoKps7bm6V5PXrWYMenc",
+        id: BTCPool.id,
         type: PoolType.STABLE,
         name: "btc2",
         description: "oWBTC jWBTC",
         image: "",
         symbol: "IBTCPOOL",
-        coins: [
-          "EQB7q5dfTXMDJteiBo3wDfi45w4bZQt-MUkpP3EZg4CZxWy2",
-          "EQAEgTzh4MAAFr35PaeMkOhBgAkqfrj7S1IM-C8yZxGaKtin",
-        ],
+        coins: BTCPool.coins,
         balances: ["0", "0"],
         rates: ["10000000000", "10000000000"],
         collectedAdminFees: ["0", "0"],
@@ -126,16 +144,13 @@ async function main() {
         totalSupply: "12340000",
       },
       {
-        id: "EQDUkIRUuXFe0HDF3y1LODmHqLmrPitEZtEDK1XdZWGLDIdT",
+        id: USDTPool.id,
         type: PoolType.STABLE,
         name: "usdt2",
-        description: "oUSDT iUSDT",
+        description: "iUSDT oUSDT",
         image: "",
         symbol: "oiUSDT",
-        coins: [
-          "EQC5qBziTUKBpDOhrrg-zdvaJZSfLKl6Bp-GdGF6n2abh8Pf",
-          "EQDetVgTEhCuRaT0h1-RGQ4DxVI6rNS9zM8YQ9flw6on1KsW",
-        ],
+        coins: USDTPool.coins,
         balances: ["0", "0"],
         rates: ["1000000000000", "1000000000000"],
         collectedAdminFees: ["0", "0"],
@@ -149,16 +164,13 @@ async function main() {
         totalSupply: "123400000",
       },
       {
-        id: "EQAqI55G0lUCPK6y02kodwHfH8kelL6gv-82-zD2Pf1E9Cnn",
+        id: daiTONPool.id,
         type: PoolType.VOLATILE,
         name: "DAI/TON",
-        description: "iDAI WTON",
+        description: "iDAI oWBTC",
         image: "",
         symbol: "",
-        coins: [
-          "EQCDXnZB8rE-5SK11xw48FRLqGgse4uo93rJDJN9dvTEziw3",
-          "EQBqYsE3MAG1QzW61qY-dXirHxMMliQI20nxVbYhaL1uhbhT",
-        ],
+        coins: daiTONPool.coins,
         balances: ["0", "0"],
         rates: [],
         collectedAdminFees: ["0", "0"],
