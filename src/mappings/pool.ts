@@ -1,9 +1,9 @@
-import { Event, BurnParams, ExchangeParams, MintParams } from "../types/events";
-import prisma from "../clients/prisma";
+import { Event, BurnParams, ExchangeParams, MintParams } from '../types/events'
+import prisma from '../clients/prisma'
 
 export const handleExchange = async (event: Event<ExchangeParams>) => {
-  console.log("Exchange event is indexed.");
-  console.log(event);
+  console.log('Exchange event is indexed.')
+  console.log(event)
 
   await prisma.exchange.upsert({
     where: {
@@ -30,12 +30,12 @@ export const handleExchange = async (event: Event<ExchangeParams>) => {
       poolId: event.transaction.source,
       timestamp: event.transaction.timestamp,
     },
-  });
-};
+  })
+}
 
 export const handleBurn = async (event: Event<BurnParams>) => {
-  console.log("Burn event is indexed.");
-  console.log(event);
+  console.log('Burn event is indexed.')
+  console.log(event)
 
   await prisma.burn.upsert({
     where: {
@@ -54,12 +54,12 @@ export const handleBurn = async (event: Event<BurnParams>) => {
       amounts: event.params.amounts,
       timestamp: event.transaction.timestamp,
     },
-  });
-};
+  })
+}
 
 export const handleMint = async (event: Event<MintParams>) => {
-  console.log("Mint event is indexed.");
-  console.log(event);
+  console.log('Mint event is indexed.')
+  console.log(event)
 
   await prisma.mint.upsert({
     where: {
@@ -78,5 +78,5 @@ export const handleMint = async (event: Event<MintParams>) => {
       amounts: event.params.amounts,
       timestamp: event.transaction.timestamp,
     },
-  });
-};
+  })
+}

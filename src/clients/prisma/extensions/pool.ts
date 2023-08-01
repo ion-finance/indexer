@@ -1,8 +1,8 @@
-import { Prisma } from "@prisma/client";
-import prisma from "..";
-import moment from "moment";
-import { StablePool } from "../../../wrappers/StablePool";
-import { VolatilePool } from "../../../wrappers/VolatilePool";
+import { Prisma } from '@prisma/client'
+import prisma from '..'
+import moment from 'moment'
+import { StablePool } from '../../../wrappers/StablePool'
+import { VolatilePool } from '../../../wrappers/VolatilePool'
 
 const PoolExtensions = Prisma.defineExtension({
   name: `PoolExtensions`,
@@ -10,7 +10,7 @@ const PoolExtensions = Prisma.defineExtension({
     pool: {
       async applyStablePool(
         id: string,
-        storage: Awaited<ReturnType<StablePool["getStorage"]>>
+        storage: Awaited<ReturnType<StablePool['getStorage']>>,
       ) {
         await prisma.pool.update({
           where: {
@@ -28,14 +28,14 @@ const PoolExtensions = Prisma.defineExtension({
             coins: storage.coins.map((c) => c.toString()),
             balances: storage.balances.map((b) => b.toString()),
             collectedAdminFees: storage.collected_admin_fees.map((b) =>
-              b.toString()
+              b.toString(),
             ),
           },
-        });
+        })
       },
       async applyVolatilePool(
         id: string,
-        storage: Awaited<ReturnType<VolatilePool["getStorage"]>>
+        storage: Awaited<ReturnType<VolatilePool['getStorage']>>,
       ) {
         await prisma.pool.update({
           where: { id },
@@ -47,13 +47,13 @@ const PoolExtensions = Prisma.defineExtension({
             coins: storage.coins.map((c) => c.toString()),
             balances: storage.balances.map((b) => b.toString()),
             collectedAdminFees: storage.collected_admin_fees.map((b) =>
-              b.toString()
+              b.toString(),
             ),
           },
-        });
+        })
       },
     },
   },
-});
+})
 
-export default PoolExtensions;
+export default PoolExtensions

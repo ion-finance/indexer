@@ -1,12 +1,12 @@
 export interface Transaction {
-  source: string; // pool address
-  hash: string; // transaction hash
-  timestamp: number; // timestamp
+  source: string // pool address
+  hash: string // transaction hash
+  timestamp: number // timestamp
 }
 
 export interface Event<T> {
-  transaction: Transaction;
-  params: T;
+  transaction: Transaction
+  params: T
 }
 
 /*
@@ -20,12 +20,12 @@ export interface Event<T> {
   const to_address = body.loadAddress();
 */
 export interface ExchangeParams {
-  from: string;
-  i: number;
-  j: number;
-  amountI: string;
-  amountJ: string;
-  to: string;
+  from: string
+  i: number
+  j: number
+  amountI: string
+  amountJ: string
+  to: string
 }
 
 /*
@@ -36,8 +36,8 @@ export interface ExchangeParams {
   const amounts: bigint[] = [];
 */
 export interface BurnParams {
-  from: string;
-  amounts: string[];
+  from: string
+  amounts: string[]
 }
 
 /*
@@ -48,8 +48,8 @@ export interface BurnParams {
   const amounts: bigint[] = [];
 */
 export interface MintParams {
-  from: string;
-  amounts: string[];
+  from: string
+  amounts: string[]
 }
 
 /*
@@ -61,7 +61,7 @@ export interface MintParams {
   const coins: Address[] = [];
 */
 export interface PoolCreatedParams {
-  poolType: number;
-  poolAddress: string;
-  coins: string[];
+  poolType: number
+  poolAddress: string
+  coins: string[]
 }
