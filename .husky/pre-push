@@ -1,0 +1,22 @@
+#!/bin/sh
+
+protected_branch='main'
+
+echo "Pre-push hook started"
+
+while read local_ref local_sha remote_ref remote_sha
+do
+    echo "local_ref: $local_ref"
+    echo "local_sha: $local_sha"
+    echo "remote_ref: $remote_ref"
+    echo "remote_sha: $remote_sha"
+    
+    if [ "${remote_ref##refs/heads/}" = "$protected_branch" ]; then
+        echo "ERROR: You're not allowed to push to $protected_branch."
+        exit 1
+    fi
+done
+
+echo "Pre-push hook ended"
+
+exit 0
