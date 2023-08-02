@@ -65,3 +65,18 @@ export interface PoolCreatedParams {
   poolAddress: string
   coins: string[]
 }
+
+/*
+  const body = message.body.beginParse();
+  const log_code = body.loadUint(32);
+  const jettonAmount = body.loadCoins().toString()
+  const minLpOut = body.loadCoins().toString()
+  const targetIndex = body.loadUint(2)
+  const intendedAmountsBuilder = body.loadRef().beginParse()
+*/
+export interface AddLiquidityParams {
+  jettonAmount: string
+  minLpOut: string
+  targetIndex: number
+  intendedAmounts: string[]
+}

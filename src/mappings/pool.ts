@@ -1,4 +1,10 @@
-import { Event, BurnParams, ExchangeParams, MintParams } from '../types/events'
+import {
+  Event,
+  BurnParams,
+  ExchangeParams,
+  MintParams,
+  AddLiquidityParams,
+} from '../types/events'
 import prisma from '../clients/prisma'
 
 export const handleExchange = async (event: Event<ExchangeParams>) => {
@@ -77,6 +83,36 @@ export const handleMint = async (event: Event<MintParams>) => {
       id: event.transaction.hash,
       amounts: event.params.amounts,
       timestamp: event.transaction.timestamp,
+    },
+  })
+}
+
+export const handleAddLiquidity = async (event: Event<AddLiquidityParams>) => {
+  console.log('Add liquidity event is indexed.')
+  console.log(event)
+  const { jettonAmount, minLpOut, targetIndex, intendedAmounts } = event.params
+  const { hash, source, timestamp } = event.transaction
+
+  await prisma.addLiquidity.upsert({
+    where: {
+      id: hash,
+    },
+    update: {
+      jettonAmount,
+      minLpOut,
+      targetIndex,
+      intendedAmounts,
+      poolId: source,
+      timestamp,
+    },
+    create: {
+      id: hash,
+      jettonAmount,
+      minLpOut,
+      targetIndex,
+      intendedAmounts,
+      poolId: source,
+      timestamp,
     },
   })
 }

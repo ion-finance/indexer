@@ -2,16 +2,23 @@ import axios from 'axios'
 import { TransactionResult } from '../types/ton-api'
 import parseMint from '../parsers/parseMint'
 import { Address, Cell } from 'ton-core'
-import { handleBurn, handleExchange, handleMint } from '../mappings/pool'
+import {
+  handleAddLiquidity,
+  handleBurn,
+  handleExchange,
+  handleMint,
+} from '../mappings/pool'
 import parseBurn from '../parsers/parseBurn'
 import parseExchange from '../parsers/parseExchange'
 import { handlePoolCreated } from '../mappings/router'
 import parsePoolCreated from '../parsers/parsePoolCreated'
+import parseAddLiquidity from '../parsers/parseAddLiquidity'
 
 const MINT = '0x12761d14'
 const BURN = '0x443cf371'
 const EXCHANGE = '0xbd687ba6'
 const POOL_CREATED = '0x7d0e1322'
+const ADD_LIQUIDITY = '0x5e27b769'
 
 const handleEvent = async (event_id: string) => {
   // TODO : handle errors;
@@ -79,6 +86,13 @@ const handleEvent = async (event_id: string) => {
           await handlePoolCreated({
             transaction: parseTx,
             params: parsePoolCreated(body),
+          })
+          break
+        }
+        case ADD_LIQUIDITY: {
+          await handleAddLiquidity({
+            transaction: parseTx,
+            params: parseAddLiquidity(body),
           })
           break
         }

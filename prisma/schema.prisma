@@ -89,6 +89,18 @@ model Mint {
   amounts   String[]
 }
 
+model AddLiquidity {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+  timestamp Int
+  poolId    String
+  jettonAmouont String
+  minLpOut String
+  targetIndex Int
+  intendedAmounts String[]
+}
+
 // last block or tx data
 // heath check
 model IndexerState {
