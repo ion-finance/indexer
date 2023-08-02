@@ -12,7 +12,7 @@ const WTON = 'EQDYz2CjZxOj89hbrWNFLVUUnRZStsJ_swnP8n1ZjTPnZsha'
 
 const triPool = {
   id: 'EQAW0HfBulYajjX6uTVniI9rKvBqJyUR2hiHAlmF-D3BhAXm',
-  coins: [iUSDC, iDAI, iUSDT],
+  coins: [iUSDT, iDAI, iUSDC],
 }
 const BTCPool = {
   id: 'EQCA889dWEGxzSigaP1rBnSS16ejXk78jUp98AO5Uv5ekTrD',
