@@ -95,7 +95,7 @@ model AddLiquidity {
   updatedAt DateTime @default(now()) @updatedAt
   timestamp Int
   poolId    String
-  jettonAmouont String
+  jettonAmount String
   minLpOut String
   targetIndex Int
   intendedAmounts String[]
