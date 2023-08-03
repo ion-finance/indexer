@@ -4,7 +4,7 @@ import { Event } from '../types/ton-api'
 
 const fetchEvents = async () => {
   const timestamp = await prisma.indexerState.getLastTimestamp()
-  const routerAddress = 'EQCewkWzGJaEaYnk9eUveOPM-t20-FNhTxbx-kVaekB5TpAl'
+  const routerAddress = 'EQDEEwdjcctlXsOkNFeACn9z9wnZoUEoEyI_Pw0mnAM6FtS3'
   const res = await axios(
     `${process.env.TON_API_URL}/accounts/${routerAddress}/events?start_date=${
       timestamp - 10

@@ -2,28 +2,28 @@ import { PoolType, PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
-const iUSDC = 'EQB6UB46ipi601N1arUs5Vv7QktciiL9eefunUvLSHgm5fcf'
-const iUSDT = 'EQCtvA6MbXDOhjjivcObumI48YbIc7N9KE5X0x07TvRKTqcK'
-const iDAI = 'EQBBxsIAaCCP5yrK_u9sY84UFlwZSFSDCGzE-nsz_uNJlI1C'
-const oUSDT = 'EQBwfWymTvTtsNADYZMkLxuuh3G-VfJA0uaeELneC1wjobxo'
-const oWBTC = 'EQBr8ezCqfust-ICF8mup-DqbI8dGD5NAczEH8Hd2X9CumTb'
-const WTON = 'EQBYFCrhipizQp3C3gj5TSPZK1Aaa3_ZsgHmxj6wLluEzks2'
-const jWBTC = 'EQDUE_6h6bajiBNmIp3skoCugi_v4s8usrfsHLI-xMvHDWHO'
+const iUSDC = 'EQAy1dZ7EceO5ttjXb8f5DCOpIHrcMfMcDTiBmDeL_vNontR'
+const iUSDT = 'EQAhuJDQQM7xuIHOmHx40Z1ZWnmU7HHr-ElPkVO1OI52e5rb'
+const iDAI = 'EQBRzRfI3mUz2jIj806jenH5q3NsNsyahSq6qlBRdt4N_HBI'
+const oUSDT = 'EQAyZnglvqBzg_26gfZFVbonXBSClexXXymuCr8N7GD-UWk7'
+const oWBTC = 'EQBnLcBsmzh3r3EaghuqTzML6ahz3rMZKdFt4CQDKU9Reikq'
+const WTON = 'EQBgXllYwjzy07gkTH3Znc7Oti2AUuuUY1oMuB7X81AfyrOj'
+const jWBTC = 'EQBCS0N67AVulqQvg0j_u8hxJk8rIe57DWu8yGOLnqTZ5Ygo'
 
 const triPool = {
-  id: 'EQCZAVu6poebTVMuAl_kQkVScVe652t7UOic8AgwA-f1WBup',
+  id: 'EQBqfblp1Nj5zCQ7l1vi4ZCHZWC6mQiugbbtqXOVXgBEV9vy',
   coins: [iUSDT, iDAI, iUSDC],
 }
 const BTCPool = {
-  id: 'EQDD1HSYzM2w9DEoGZBHo0bPAnHeZEv1pURL0KHCvxgHEKh4',
+  id: 'EQAHCgYIOtfAIEHj6m-v7ENm4qTrms8EZjWEFBqwolNuxmSf',
   coins: [oWBTC, jWBTC],
 }
 const USDTPool = {
-  id: 'EQDLuA7ygunEupWb1OkRTMJb9CmsqKp2kjdROaV3fO8iTQCa',
+  id: 'EQAywQklSSGMaktH7E8owk5lwiowq-xAqjJscE4h3bSIRCXP',
   coins: [iUSDT, oUSDT],
 }
 const daiTONPool = {
-  id: 'EQD_nWH5FGdIGTEEzMPrVjpJW_dTZidSkWnsm0fh8ML3zAtL',
+  id: 'EQA9wH1HODRG4nHu7vcE4SqrPCPBIzu89UGvN9ZBfnKXwOdT',
   coins: [iDAI, oWBTC],
 }
 

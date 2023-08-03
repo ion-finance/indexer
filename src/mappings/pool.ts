@@ -90,7 +90,8 @@ export const handleMint = async (event: Event<MintParams>) => {
 export const handleAddLiquidity = async (event: Event<AddLiquidityParams>) => {
   console.log('Add liquidity event is indexed.')
   console.log(event)
-  const { jettonAmount, minLpOut, targetIndex, intendedAmounts } = event.params
+  const { from, jettonAmount, minLpOut, targetIndex, intendedAmounts } =
+    event.params
   const { hash, source, timestamp } = event.transaction
 
   await prisma.addLiquidity.upsert({
@@ -98,6 +99,7 @@ export const handleAddLiquidity = async (event: Event<AddLiquidityParams>) => {
       id: hash,
     },
     update: {
+      from,
       jettonAmount,
       minLpOut,
       targetIndex,
@@ -107,6 +109,7 @@ export const handleAddLiquidity = async (event: Event<AddLiquidityParams>) => {
     },
     create: {
       id: hash,
+      from,
       jettonAmount,
       minLpOut,
       targetIndex,

@@ -4,6 +4,7 @@ import { AddLiquidityParams } from '../types/events'
 const parseAddLiquidity = (message: Cell): AddLiquidityParams => {
   const body = message.beginParse()
   body.loadUint(32) // skip log code
+  const from = body.loadAddress().toString()
   const jettonAmount = body.loadCoins().toString()
   const minLpOut = body.loadCoins().toString()
   const targetIndex = body.loadUint(2)
@@ -20,6 +21,7 @@ const parseAddLiquidity = (message: Cell): AddLiquidityParams => {
   }
 
   return {
+    from,
     jettonAmount,
     minLpOut,
     targetIndex,
