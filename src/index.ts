@@ -22,7 +22,7 @@ const eventPooling = async () => {
   const events = await fetchEvents();
 
   if (events.length === 0) {
-    console.debug(`No events found. Sleep for ${MIN_POOL / 1000}s.`);
+    // console.debug(`No events found. Sleep for ${MIN_POOL / 1000}s.`);
     sleep(MIN_POOL);
     return;
   }
