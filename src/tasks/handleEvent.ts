@@ -24,7 +24,11 @@ const handleEvent = async (event_id: string) => {
   // TODO : handle errors;
   // ! FIXME
   // * traces api response can be pending
-  const res = await axios(`${process.env.TON_API_URL}/traces/${event_id}`)
+  const res = await axios(`${process.env.TON_API_URL}/traces/${event_id}`, {
+    headers: {
+      Authorization: `Bearer ${process.env.TON_API_KEY}`,
+    },
+  });
 
   const transactionRes = res.data as TransactionResult
 
