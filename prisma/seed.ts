@@ -12,7 +12,7 @@ const jWBTC = 'EQBCS0N67AVulqQvg0j_u8hxJk8rIe57DWu8yGOLnqTZ5Ygo'
 
 const triPool = {
   id: 'EQBqfblp1Nj5zCQ7l1vi4ZCHZWC6mQiugbbtqXOVXgBEV9vy',
-  coins: [iUSDT, iDAI, iUSDC],
+  coins: [iUSDT, iUSDC, iDAI],
 }
 const BTCPool = {
   id: 'EQAHCgYIOtfAIEHj6m-v7ENm4qTrms8EZjWEFBqwolNuxmSf',
@@ -107,12 +107,12 @@ async function main() {
         id: triPool.id,
         type: PoolType.STABLE,
         name: 'iTripool',
-        description: 'iUSDT iDAI iUSDC',
+        description: 'iUSDT iUSDC iDAI',
         image: '',
         symbol: 'ITRIPOOL',
         coins: triPool.coins,
         balances: ['0', '0', '0'],
-        rates: ['1000000000000', '1', '1000000000000'],
+        rates: ['1000000000000', '1000000000000', '1'],
         collectedAdminFees: ['0', '0', '0'],
         initialA: 5000,
         futureA: 5000,
