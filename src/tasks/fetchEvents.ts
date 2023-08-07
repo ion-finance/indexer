@@ -1,10 +1,11 @@
-import axios from "axios";
-import prisma from "../clients/prisma";
-import { Event } from "../types/ton-api";
+import axios from 'axios'
+import prisma from '../clients/prisma'
+import { Event } from '../types/ton-api'
 
 const fetchEvents = async () => {
-  const timestamp = await prisma.indexerState.getLastTimestamp();
-  const routerAddress = "EQDPba4MHzwT7Q8YT_qJhzRs4sfUDqCCxkS_Fn642yjPH-71";
+  const timestamp = await prisma.indexerState.getLastTimestamp()
+  const startTimeStamp = timestamp ? timestamp - 10 : 0
+  const routerAddress = 'EQDEEwdjcctlXsOkNFeACn9z9wnZoUEoEyI_Pw0mnAM6FtS3'
   const res = await axios(
     `${process.env.TON_API_URL}/accounts/${routerAddress}/events?start_date=${timestamp}&limit=100`,
     {
@@ -14,9 +15,9 @@ const fetchEvents = async () => {
     }
   );
 
-  const events = res.data.events as Event[];
+  const events = res.data.events as Event[]
 
-  return events;
-};
+  return events
+}
 
-export default fetchEvents;
+export default fetchEvents

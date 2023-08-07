@@ -1,0 +1,38 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+
+# Define the list of allowed names and emails
+allowed_names=("alice-ion" "devlbrian" "clark-ion" "jeff")
+allowed_emails=("alice@ionfi.xyz" "brian@ionfi.xyz" "clark@ionfi.xyz" "jeff@ionfi.xyz")
+
+# Get the current user's name and email
+current_name=$(git config user.name)
+current_email=$(git config user.email)
+
+# Function to check if a value is in an array
+containsElement () {
+  local e match="$1"
+  shift
+  for e; do [[ "$e" == "$match" ]] && return 0; done
+  return 1
+}
+
+# Define the color codes
+RED='\033[0;31m'
+NC='\033[0m' # No Color
+
+# Check if the current name and email are in the allowed lists
+if ! containsElement "$current_name" "${allowed_names[@]}" ; then
+    echo -e "${RED}Error: Current user name ($current_name) is not allowed.${NC}"
+    exit 1
+fi
+
+if ! containsElement "$current_email" "${allowed_emails[@]}" ; then
+    echo -e "${RED}Error: Current user email ($current_email) is not allowed.${NC}"
+    exit 1
+fi
+
+echo "Pre-commit success with user.name ($current_name) user.email($current_email)"
+
+yarn lint-staged
