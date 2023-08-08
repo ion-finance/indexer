@@ -20,7 +20,7 @@ import moment from 'moment'
 
 dotenv.config()
 
-const PORT = parseInt(process.env.PORT || '3001')
+const PORT = parseInt(process.env.PORT || '3000')
 const MIN_POOL = 200 // 0.2s
 
 const eventPooling = async () => {
