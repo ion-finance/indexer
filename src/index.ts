@@ -1,8 +1,7 @@
 import dotenv from 'dotenv'
 import cron from 'node-cron'
-import Fastify from 'fastify'
 import express from 'express'
-import cors from '@fastify/cors'
+import cors from 'cors'
 import fetchEvents from './tasks/fetchEvents'
 import handleEvent from './tasks/handleEvent'
 import prisma from './clients/prisma'
@@ -74,67 +73,60 @@ cron.schedule('* * * * *', async () => {
   await refreshAllPools()
 })
 
-const server = Fastify({
-  logger: false,
-})
+const app = express()
 
-server.register(cors, {
-  origin: '*',
-  methods: ['GET', 'OPTIONS'],
-})
+app.use(cors())
 
-server.get('/', async function handler() {
-  return { hello: 'world' }
-})
-
-server.get('/pools', async function handler() {
+app.get('/pools', async function handler(_req, res) {
   const [coins, pools] = await Promise.all([
     prisma.coin.findMany(),
     prisma.pool.findMany(),
   ])
 
-  return pools.map((pool) => {
-    const coinData = pool.coins.map((coinId) =>
-      coins.find((coin) => coin.id === coinId),
-    )
-    const coinsInPool: Coin[] = compact(coinData)
+  return res.json(
+    pools.map((pool) => {
+      const coinData = pool.coins.map((coinId) =>
+        coins.find((coin) => coin.id === coinId),
+      )
+      const coinsInPool: Coin[] = compact(coinData)
 
-    return {
-      ...pool,
-      coins: coinsInPool,
-    }
-  })
+      return {
+        ...pool,
+        coins: coinsInPool,
+      }
+    }),
+  )
 })
 
-server.get('/coins', async function handler() {
-  return await prisma.coin.findMany()
+app.get('/coins', async function handler(_req, res) {
+  return res.json(await prisma.coin.findMany())
 })
 
-server.get('/events/:account', async function handler(request, reply) {
-  const { account } = request.params as { account: string }
+app.get('/events/:account', async function handler(req, res) {
+  const { account } = req.params as { account: string }
 
-  if (!account) return reply.code(400).send('Invalid account address')
+  if (!account) return res.status(400).send('Invalid account address')
 
   let address: string
   try {
     address = Address.parse(account).toString()
   } catch {
-    return reply.code(400).send('Invalid account address')
+    return res.status(400).send('Invalid account address')
   }
 
-  const { afterTimestamp } = request.query as { afterTimestamp?: string }
+  const { afterTimestamp } = req.query as { afterTimestamp?: string }
 
   if (afterTimestamp) {
     if (isNaN(Number(afterTimestamp))) {
-      return reply
-        .code(400)
+      return res
+        .status(400)
         .send('Invalid afterTimesamp. afterTimestamp should be a number')
     }
     const parsedTimestamp = Number(afterTimestamp)
 
     if (parsedTimestamp < moment().unix() - 3600) {
-      return reply
-        .code(400)
+      return res
+        .status(400)
         .send('afterTimestamp shoud be less than 1 hour from now')
     }
   }
@@ -183,7 +175,7 @@ server.get('/events/:account', async function handler(request, reply) {
     }
   })
 
-  return {
+  return res.json({
     exchanges: exchanges.map((exchange) => {
       const poolData = poolsWithCoins.find(
         (pool) => pool.id === exchange.poolId,
@@ -220,16 +212,8 @@ server.get('/events/:account', async function handler(request, reply) {
         pool: poolData,
       }
     }),
-  }
+  })
 })
-
-/*
-server.listen({ port: 3000 }).then(() => {
-  console.log(`Server listening on port 3000`)
-})
-*/
-
-const app = express()
 
 app.get('/', async (req, res) => {
   res.send(`Hello!`)

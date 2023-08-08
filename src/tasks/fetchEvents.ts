@@ -12,8 +12,8 @@ const fetchEvents = async () => {
       headers: {
         Authorization: `Bearer ${process.env.TON_API_KEY}`,
       },
-    }
-  );
+    },
+  )
 
   const events = res.data.events as Event[]
 

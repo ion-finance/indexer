@@ -28,7 +28,7 @@ const handleEvent = async (event_id: string) => {
     headers: {
       Authorization: `Bearer ${process.env.TON_API_KEY}`,
     },
-  });
+  })
 
   const transactionRes = res.data as TransactionResult
 
