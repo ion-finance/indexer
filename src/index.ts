@@ -20,7 +20,6 @@ import moment from 'moment'
 
 dotenv.config()
 
-const PORT = parseInt(process.env.PORT || '3000')
 const MIN_POOL = 200 // 0.2s
 
 const eventPooling = async () => {
@@ -223,6 +222,6 @@ server.get('/events/:account', async function handler(request, reply) {
   }
 })
 
-server.listen({ port: PORT }).then(() => {
-  console.log(`Server listening on port ${PORT}`)
+server.listen({ port: 3000 }).then(() => {
+  console.log(`Server listening on port 3000`)
 })
