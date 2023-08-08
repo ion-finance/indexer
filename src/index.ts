@@ -1,6 +1,7 @@
 import dotenv from 'dotenv'
 import cron from 'node-cron'
 import Fastify from 'fastify'
+import express from 'express'
 import cors from '@fastify/cors'
 import fetchEvents from './tasks/fetchEvents'
 import handleEvent from './tasks/handleEvent'
@@ -222,6 +223,18 @@ server.get('/events/:account', async function handler(request, reply) {
   }
 })
 
+/*
 server.listen({ port: 3000 }).then(() => {
   console.log(`Server listening on port 3000`)
+})
+*/
+
+const app = express()
+
+app.get('/', async (req, res) => {
+  res.send(`Hello!`)
+})
+
+app.listen(3000, () => {
+  console.log(`Example app listening on port ${3000}`)
 })
