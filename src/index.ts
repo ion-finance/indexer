@@ -223,4 +223,6 @@ server.get('/events/:account', async function handler(request, reply) {
   }
 })
 
-server.listen({ port: PORT })
+server.listen({ port: PORT }).then(() => {
+  console.log(`Server listening on port ${PORT}`)
+})
