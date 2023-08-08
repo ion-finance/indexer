@@ -1,6 +1,7 @@
 import dotenv from 'dotenv'
-import http from 'http'
 import cron from 'node-cron'
+import Fastify from 'fastify'
+import cors from '@fastify/cors'
 import fetchEvents from './tasks/fetchEvents'
 import handleEvent from './tasks/handleEvent'
 import prisma from './clients/prisma'
@@ -12,11 +13,15 @@ import {
 import { refreshDailyAPY, refreshWeeklyApy } from './tasks/refreshAPY'
 import { refreshPrices } from './tasks/refreshPrices'
 import { refreshDailyVolume } from './tasks/refreshVoulme'
+import { compact } from 'lodash'
+import { Coin } from '@prisma/client'
+import { Address } from 'ton-core'
+import moment from 'moment'
 
 dotenv.config()
 
-const PORT = process.env.PORT || 3000;
-const MIN_POOL = 200; // 0.2s
+const PORT = parseInt(process.env.PORT || '3001')
+const MIN_POOL = 200 // 0.2s
 
 const eventPooling = async () => {
   const events = await fetchEvents()
@@ -69,15 +74,153 @@ cron.schedule('* * * * *', async () => {
   await refreshAllPools()
 })
 
-export const server = http.createServer(async (req, res) => {
-  res.writeHead(200, { 'Content-Type': 'application/json' })
-  res.end(
-    JSON.stringify({
-      greeting: 'hello',
-    }),
-  )
+const server = Fastify({
+  logger: false,
 })
 
-server.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}/`)
+server.register(cors, {
+  origin: '*',
+  methods: ['GET', 'OPTIONS'],
 })
+
+server.get('/', async function handler() {
+  return { hello: 'world' }
+})
+
+server.get('/pools', async function handler() {
+  const [coins, pools] = await Promise.all([
+    prisma.coin.findMany(),
+    prisma.pool.findMany(),
+  ])
+
+  return pools.map((pool) => {
+    const coinData = pool.coins.map((coinId) =>
+      coins.find((coin) => coin.id === coinId),
+    )
+    const coinsInPool: Coin[] = compact(coinData)
+
+    return {
+      ...pool,
+      coins: coinsInPool,
+    }
+  })
+})
+
+server.get('/coins', async function handler() {
+  return await prisma.coin.findMany()
+})
+
+server.get('/events/:account', async function handler(request, reply) {
+  const { account } = request.params as { account: string }
+
+  if (!account) return reply.code(400).send('Invalid account address')
+
+  let address: string
+  try {
+    address = Address.parse(account).toString()
+  } catch {
+    return reply.code(400).send('Invalid account address')
+  }
+
+  const { afterTimestamp } = request.query as { afterTimestamp?: string }
+
+  if (afterTimestamp) {
+    if (isNaN(Number(afterTimestamp))) {
+      return reply
+        .code(400)
+        .send('Invalid afterTimesamp. afterTimestamp should be a number')
+    }
+    const parsedTimestamp = Number(afterTimestamp)
+
+    if (parsedTimestamp < moment().unix() - 3600) {
+      return reply
+        .code(400)
+        .send('afterTimestamp shoud be less than 1 hour from now')
+    }
+  }
+
+  const parsedTimestamp = afterTimestamp ? Number(afterTimestamp) : 0
+
+  const [coins, pools, exchanges, mints, burns, addLiquidities] =
+    await Promise.all([
+      prisma.coin.findMany(),
+      prisma.pool.findMany(),
+      prisma.exchange.findMany({
+        where: {
+          from: address,
+          timestamp: { gte: parsedTimestamp },
+        },
+      }),
+      prisma.mint.findMany({
+        where: {
+          from: address,
+          timestamp: { gte: parsedTimestamp },
+        },
+      }),
+      prisma.burn.findMany({
+        where: {
+          from: address,
+          timestamp: { gte: parsedTimestamp },
+        },
+      }),
+      prisma.addLiquidity.findMany({
+        where: {
+          from: address,
+          timestamp: { gte: parsedTimestamp },
+        },
+      }),
+    ])
+
+  const poolsWithCoins = pools.map((pool) => {
+    const coinData = pool.coins.map((coinId) =>
+      coins.find((coin) => coin.id === coinId),
+    )
+    const coinsInPool: Coin[] = compact(coinData)
+
+    return {
+      ...pool,
+      coins: coinsInPool,
+    }
+  })
+
+  return {
+    exchanges: exchanges.map((exchange) => {
+      const poolData = poolsWithCoins.find(
+        (pool) => pool.id === exchange.poolId,
+      )
+
+      return {
+        ...exchange,
+        pool: poolData,
+      }
+    }),
+    mints: mints.map((mint) => {
+      const poolData = poolsWithCoins.find((pool) => pool.id === mint.poolId)
+
+      return {
+        ...mint,
+        pool: poolData,
+      }
+    }),
+    burns: burns.map((burn) => {
+      const poolData = poolsWithCoins.find((pool) => pool.id === burn.poolId)
+
+      return {
+        ...burn,
+        pool: poolData,
+      }
+    }),
+    addLiquidities: addLiquidities.map((addLiquidity) => {
+      const poolData = poolsWithCoins.find(
+        (pool) => pool.id === addLiquidity.poolId,
+      )
+
+      return {
+        ...addLiquidity,
+        pool: poolData,
+      }
+    }),
+  }
+})
+
+server.listen({ port: PORT })
