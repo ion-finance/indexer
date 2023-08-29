@@ -20,6 +20,8 @@ import moment from 'moment'
 
 dotenv.config()
 
+const isApy = process.env.API_ONLY === 'true'
+
 const MIN_POOL = 200 // 0.2s
 
 const eventPooling = async () => {
@@ -43,6 +45,9 @@ const eventPooling = async () => {
 }
 
 const main = async () => {
+  if (isApy) {
+    return
+  }
   await refreshPrices()
   await refreshDailyVolume()
   await refreshDailyAPY()
@@ -59,6 +64,9 @@ const main = async () => {
 main()
 
 cron.schedule('0 * * * *', async () => {
+  if (isApy) {
+    return
+  }
   await refreshPrices()
   await refreshDailyVolume()
   await refreshDailyAPY()
@@ -66,10 +74,16 @@ cron.schedule('0 * * * *', async () => {
 })
 
 cron.schedule('*/10 * * * * *', async () => {
+  if (isApy) {
+    return
+  }
   await refreshPoolsIfRecentEventsExist()
 })
 
 cron.schedule('* * * * *', async () => {
+  if (isApy) {
+    return
+  }
   await refreshAllPools()
 })
 
