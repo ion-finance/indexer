@@ -21,6 +21,8 @@ import moment from 'moment'
 dotenv.config()
 
 const isApy = process.env.API_ONLY === 'true'
+console.log('apionly=' + isApy)
+console.log('NODE_ENV' + process.env.NODE_ENV)
 
 const MIN_POOL = 200 // 0.2s
 
@@ -92,10 +94,13 @@ const app = express()
 app.use(cors())
 
 app.get('/pools', async function handler(_req, res) {
-  const [coins, pools] = await Promise.all([
+  const [coinRes, poolRes] = await Promise.allSettled([
     prisma.coin.findMany(),
     prisma.pool.findMany(),
   ])
+
+  const coins = coinRes.status === 'fulfilled' ? coinRes.value : []
+  const pools = poolRes.status === 'fulfilled' ? poolRes.value : []
 
   return res.json(
     pools.map((pool) => {
@@ -147,8 +152,8 @@ app.get('/events/:account', async function handler(req, res) {
 
   const parsedTimestamp = afterTimestamp ? Number(afterTimestamp) : 0
 
-  const [coins, pools, exchanges, mints, burns, addLiquidities] =
-    await Promise.all([
+  const [coinRes, poolRes, exchangeRes, mintRes, burnRes, addLiquidityRes] =
+    await Promise.allSettled([
       prisma.coin.findMany(),
       prisma.pool.findMany(),
       prisma.exchange.findMany({
@@ -176,6 +181,14 @@ app.get('/events/:account', async function handler(req, res) {
         },
       }),
     ])
+
+  const coins = coinRes.status === 'fulfilled' ? coinRes.value : []
+  const pools = poolRes.status === 'fulfilled' ? poolRes.value : []
+  const exchanges = exchangeRes.status === 'fulfilled' ? exchangeRes.value : []
+  const mints = mintRes.status === 'fulfilled' ? mintRes.value : []
+  const burns = burnRes.status === 'fulfilled' ? burnRes.value : []
+  const addLiquidities =
+    addLiquidityRes.status === 'fulfilled' ? addLiquidityRes.value : []
 
   const poolsWithCoins = pools.map((pool) => {
     const coinData = pool.coins.map((coinId) =>
